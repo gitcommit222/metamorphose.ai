@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { AspectRatioKey } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 export const formSchema = z.object({
 	title: z.string(),
@@ -36,10 +37,15 @@ const TransformationForm = ({
 	userId,
 	type,
 	creditBalance,
+	config = null,
 }: TransformationFormProps) => {
 	const [image, setImage] = useState(data);
 	const [newTransformation, setNewTransformation] =
 		useState<Transformations | null>(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isTransforming, setIsTransforming] = useState(false);
+	const [transformationConfig, setTransformationConfig] = useState(config);
+
 	const transformation = transformationTypes[type];
 
 	const initialFormValues =
@@ -66,6 +72,15 @@ const TransformationForm = ({
 		value: string,
 		onChangeField: (value: string) => void
 	) => {};
+
+	const onChangeInputHandler = (
+		fieldName: string,
+		value: string,
+		type: string,
+		onChangeField: (value: string) => void
+	) => {};
+
+	const onTransformHandler = () => {};
 
 	return (
 		<Form {...form}>
@@ -105,6 +120,73 @@ const TransformationForm = ({
 						)}
 					/>
 				)}
+
+				{(type === "remove" || type === "recolor") && (
+					<div className="prompt-field">
+						<CustomField
+							control={form.control}
+							name="prompt"
+							formLabel={
+								type === "remove" ? "Object to Remove" : "Object to Recolor"
+							}
+							className="w-full"
+							render={({ field }) => (
+								<Input
+									value={field.value}
+									className="input-field"
+									onChange={(e) =>
+										onInputChangeHandler(
+											"prompt",
+											e.target.value,
+											type,
+											field.onChange
+										)
+									}
+								/>
+							)}
+						/>
+
+						{type === "recolor" && (
+							<CustomField
+								control={form.control}
+								name="color"
+								formLabel="Replacement Color"
+								className="w-full"
+								render={({ field }) => (
+									<Input
+										value={field.value}
+										className="input-field"
+										onChange={(e) =>
+											onInputChangeHandler(
+												"color",
+												e.target.value,
+												"recolor",
+												field.onChange
+											)
+										}
+									/>
+								)}
+							/>
+						)}
+					</div>
+				)}
+				<div className="flex flex-col gap-4">
+					<Button
+						className="submit-button capitalize"
+						type="button"
+						disabled={isTransforming || newTransformation === null}
+						onClick={onTransformHandler}
+					>
+						{isTransforming ? "Transforming..." : "Apply Transformation"}
+					</Button>
+					<Button
+						className="submit-button capitalize"
+						type="submit"
+						disabled={isSubmitting}
+					>
+						{isSubmitting ? "Submitting..." : "Save Image"}
+					</Button>
+				</div>
 			</form>
 		</Form>
 	);
