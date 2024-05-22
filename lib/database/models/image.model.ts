@@ -4,7 +4,7 @@ interface IImage extends Document {
 	title: string;
 	transformationType: string;
 	publicId: string;
-	secureUrl: URL;
+	secureURL: URL;
 	width?: number;
 	height?: number;
 	config?: object;
@@ -34,8 +34,8 @@ const ImageSchema = new Schema<IImage>({
 		type: String,
 		required: true,
 	},
-	secureUrl: {
-		type: URL,
+	secureURL: {
+		type: String,
 		required: true,
 	},
 	width: {
@@ -48,7 +48,7 @@ const ImageSchema = new Schema<IImage>({
 		type: Object,
 	},
 	transformationUrl: {
-		type: URL,
+		type: String,
 	},
 	aspectRatio: {
 		type: String,
